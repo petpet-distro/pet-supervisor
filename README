@@ -1,0 +1,72 @@
+==============================
+        pet-supervisor
+==============================
+
+a flimsy process supervisor
+
+==============================
+             USAGE
+==============================
+
+quite seriously, usage of petpet-supervisor is meant to be
+kept at a low profile.
+basically, it's just
+
+```
+pet-supervisor daemon
+```
+
+quite simple, innit?
+
+if you want to pass more arguments to the daemon, just pass them on as normal.
+for example:
+
+```
+pet-supervisor daemon -d
+```
+
+please note that:
+- the path is automagically resolved (execvp(2) is used)
+- if the path is invalid, the supervisor will try to restart the process
+infinitely.
+
+with that in mind, just go on and continue reading ^w^
+or if you don't care about the details, just go on using the pet-supervisor,
+i honestly don't mind.
+
+==============================
+             HOW
+==============================
+this is one of the rare cases where i actually know how things work.
+
+generally speaking, it spawns the process using arguments provided in argv,
+then waits until either:
+
+- the kernel says that the process died, in which case the supervisor restarts
+the process,
+OR
+- the supervisor process gets a SIGTERM signal, in which case it sends a
+SIGTERM signal to the child, waits for two seconds, checks if the child process
+has died. If the child process has died, the program returns zero. If the child
+process didn't die, the program kills the child process with SIGKILL and then
+returns zero.
+
+==============================
+             WHY
+==============================
+
+this is one of the parts that will definitely be needed for daemon management
+for petpet.
+
+this is a complementary addition for the missing second part, which will most
+likely be written soon.
+
+this also attempts to avoid the complexity hell that systemd created by itself,
+by putting everything in one place.
+
+==============================
+            ETC
+==============================
+
+Copyright (C) 2024 Emilia Luminé <eqilia@national.shitposting.agency>
+Please note that pet-supervisor has a non-standard license that you may or may not want to check.
